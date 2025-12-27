@@ -8,12 +8,12 @@ const Home = () => {
   const [filtroConsole, setFiltroConsole] = useState('Todos');
   
   const [favoritos, setFavoritos] = useState(() => {
-    const salvos = localStorage.getItem('assopra-fita-favs');
+    const salvos = localStorage.getItem('sopra-fitas-favs');
     return salvos ? JSON.parse(salvos) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('assopra-fita-favs', JSON.stringify(favoritos));
+    localStorage.setItem('sopra-fitas-favs', JSON.stringify(favoritos));
   }, [favoritos]);
 
   const toggleFavorito = (id) => {
@@ -24,7 +24,7 @@ const Home = () => {
     }
   };
 
-  // --- SEUS JOGOS (Nomes Exatos da Pasta) ---
+  // --- LISTA DE JOGOS ---
   const jogos = [
     { 
       id: 'snes-mario', 
@@ -44,12 +44,41 @@ const Home = () => {
       console: 'MEGA DRIVE', 
       capa: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Sonic_2_US_Cover.jpg' 
     },
-    // ULTIMATE MK3 (Usando o nome da sua capa .webp)
     { 
       id: 'sega-mk3', 
       nome: 'Ultimate Mortal Kombat 3', 
       console: 'MEGA DRIVE', 
       capa: '/ultimate-mortal-kombat-3-capa.webp' 
+    },
+    { 
+      id: 'md-goldenaxe', 
+      nome: 'Golden Axe', 
+      console: 'MEGA DRIVE', 
+      capa: '/goldenaxe.jpg' 
+    },
+    { 
+      id: 'md-streetofrage', 
+      nome: 'Streets of Rage', 
+      console: 'MEGA DRIVE', 
+      capa: '/Streets_of_Rage.jpeg' 
+    },
+    { 
+      id: 'gba-zelda', 
+      nome: 'The Legend of Zelda: The Minish Cap', 
+      console: 'GBA', 
+      capa: '/zelda.jpg' 
+    },
+    { 
+      id: 'snes-topgear', 
+      nome: 'Top Gear', 
+      console: 'SNES', 
+      capa: '/Capa_de_Top_Gear.jpg' 
+    },
+    { 
+      id: 'gb-pokemon', 
+      nome: 'Pokémon Silver', 
+      console: 'GAME BOY', 
+      capa: '/pokemon-silver.jpg' 
     },
   ];
 
@@ -61,7 +90,7 @@ const Home = () => {
   };
 
   const categorias = [
-    'Todos', '❤️ Favoritos', 'SNES', 'NES', 'MASTER SYSTEM', 'MEGA DRIVE', 'PLAYSTATION 1', 'NINTENDO 64', 'GAME BOY', 'ATARI'
+    'Todos', '❤️ Favoritos', 'SNES', 'NES', 'MASTER SYSTEM', 'MEGA DRIVE', 'GBA', 'PLAYSTATION 1', 'NINTENDO 64', 'GAME BOY', 'ATARI'
   ];
 
   const jogosFiltrados = jogos.filter(jogo => {
@@ -81,7 +110,8 @@ const Home = () => {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', width: '100%', flex: 1 }}>
         
         <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <img src="/logo.png" alt="Assopra Fita Logo" style={{ maxWidth: '350px', width: '100%', height: 'auto', filter: 'drop-shadow(0 0 15px rgba(255, 165, 0, 0.2))' }} />
+          {/* CORRIGIDO AQUI: mudei para .jpg para bater com seu arquivo */}
+          <img src="/logo.jpg" alt="Sopra Fitas Logo" style={{ maxWidth: '350px', width: '100%', height: 'auto', filter: 'drop-shadow(0 0 15px rgba(255, 165, 0, 0.2))' }} />
 
           <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
             <div style={{ position: 'relative', flex: 1 }}>
@@ -142,7 +172,7 @@ const Home = () => {
             <Layers size={14} />
             <span>Biblioteca: <strong>{jogos.length} jogos</strong> prontos para jogar</span>
         </div>
-        <p>&copy; 2025 Assopra Fita. Desenvolvido por <strong>Mariana Xavier</strong>.</p>
+        <p>&copy; 2025 Sopra Fitas. Desenvolvido por <strong>Mariana Xavier</strong>.</p>
       </footer>
     </div>
   );
