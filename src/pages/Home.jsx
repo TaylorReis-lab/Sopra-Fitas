@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
-import { Search, Gamepad2, Heart, Dices, Layers } from 'lucide-react';
+import { supabase } from '../supabaseClient'; 
+import { Search, Gamepad2, Heart, Dices, Layers, User, LogOut, Coins } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+  const [pontos, setPontos] = useState(0);
+  const [nomeUsuario, setNomeUsuario] = useState('');
   const [busca, setBusca] = useState('');
   const [filtroConsole, setFiltroConsole] = useState('Todos');
   
@@ -16,6 +20,43 @@ const Home = () => {
     localStorage.setItem('sopra-fitas-favs', JSON.stringify(favoritos));
   }, [favoritos]);
 
+  useEffect(() => {
+    const fetchPerfil = async (userId) => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('pontos, nome') 
+        .eq('id', userId)
+        .single();
+
+      if (data) {
+        setPontos(data.pontos);
+        setNomeUsuario(data.nome);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) fetchPerfil(session.user.id);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchPerfil(session.user.id);
+      } else {
+        setPontos(0);
+        setNomeUsuario('');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    alert("Você saiu da conta! Até mais 👋");
+  };
+
   const toggleFavorito = (id) => {
     if (favoritos.includes(id)) {
       setFavoritos(favoritos.filter(favId => favId !== id)); 
@@ -25,85 +66,19 @@ const Home = () => {
   };
 
   const jogos = [
-    { 
-      id: 'snes-mario', 
-      nome: 'Super Mario World', 
-      console: 'SNES', 
-      capa: 'https://upload.wikimedia.org/wikipedia/en/3/32/Super_Mario_World_Coverart.png' 
-    },
-    { 
-      id: 'gen-sonic', 
-      nome: 'Sonic The Hedgehog', 
-      console: 'MASTER SYSTEM', 
-      capa: 'https://upload.wikimedia.org/wikipedia/en/b/ba/Sonic_the_Hedgehog_1_Genesis_box_art.jpg' 
-    },
-    { 
-      id: 'md-sonic2', 
-      nome: 'Sonic The Hedgehog 2', 
-      console: 'MEGA DRIVE', 
-      capa: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Sonic_2_US_Cover.jpg' 
-    },
-    { 
-      id: 'sega-mk3', 
-      nome: 'Ultimate Mortal Kombat 3', 
-      console: 'MEGA DRIVE', 
-      capa: '/ultimate-mortal-kombat-3-capa.webp' 
-    },
-    { 
-      id: 'md-goldenaxe', 
-      nome: 'Golden Axe', 
-      console: 'MEGA DRIVE', 
-      capa: '/goldenaxe.jpg' 
-    },
-    { 
-      id: 'md-streetofrage', 
-      nome: 'Streets of Rage', 
-      console: 'MEGA DRIVE', 
-      capa: '/Streets_of_Rage.jpeg' 
-    },
-    { 
-      id: 'n64-mario', 
-      nome: 'Super Mario 64', 
-      console: 'NINTENDO 64', 
-      capa: '/Super_Mario_64.jpg' 
-    },
-    { 
-      id: 'gba-zelda', 
-      nome: 'The Legend of Zelda: The Minish Cap', 
-      console: 'GBA', 
-      capa: '/zelda.jpg' 
-    },
-    { 
-      id: 'snes-topgear', 
-      nome: 'Top Gear', 
-      console: 'SNES', 
-      capa: '/Capa_de_Top_Gear.jpg' 
-    },
-    { 
-      id: 'gb-pokemon', 
-      nome: 'Pokémon Silver', 
-      console: 'GAME BOY', 
-      capa: '/pokemon-silver.jpg' 
-    },
-    { 
-      id: 'snes-dkc', 
-      nome: 'Donkey Kong Country', 
-      console: 'SNES', 
-      capa: '/dkc.png' 
-    },
-    // --- NOVOS JOGOS (Agora como SNES) ---
-    { 
-      id: 'snes-aladdin', 
-      nome: 'Disney\'s Aladdin', 
-      console: 'SNES',   
-      capa: '/aladdin.jpg' 
-    },
-    { 
-      id: 'snes-rrr', 
-      nome: 'Rock n\' Roll Racing', 
-      console: 'SNES', 
-      capa: '/rrr.jpg' 
-    }
+    { id: 'snes-mario', nome: 'Super Mario World', console: 'SNES', capa: 'https://upload.wikimedia.org/wikipedia/en/3/32/Super_Mario_World_Coverart.png' },
+    { id: 'gen-sonic', nome: 'Sonic The Hedgehog', console: 'MASTER SYSTEM', capa: 'https://upload.wikimedia.org/wikipedia/en/b/ba/Sonic_the_Hedgehog_1_Genesis_box_art.jpg' },
+    { id: 'md-sonic2', nome: 'Sonic The Hedgehog 2', console: 'MEGA DRIVE', capa: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Sonic_2_US_Cover.jpg' },
+    { id: 'sega-mk3', nome: 'Ultimate Mortal Kombat 3', console: 'MEGA DRIVE', capa: '/ultimate-mortal-kombat-3-capa.webp' },
+    { id: 'md-goldenaxe', nome: 'Golden Axe', console: 'MEGA DRIVE', capa: '/goldenaxe.jpg' },
+    { id: 'md-streetofrage', nome: 'Streets of Rage', console: 'MEGA DRIVE', capa: '/Streets_of_Rage.jpeg' },
+    { id: 'n64-mario', nome: 'Super Mario 64', console: 'NINTENDO 64', capa: '/Super_Mario_64.jpg' },
+    { id: 'gba-zelda', nome: 'The Legend of Zelda: The Minish Cap', console: 'GBA', capa: '/zelda.jpg' },
+    { id: 'snes-topgear', nome: 'Top Gear', console: 'SNES', capa: '/Capa_de_Top_Gear.jpg' },
+    { id: 'gb-pokemon', nome: 'Pokémon Silver', console: 'GAME BOY', capa: '/pokemon-silver.jpg' },
+    { id: 'snes-dkc', nome: 'Donkey Kong Country', console: 'SNES', capa: '/dkc.png' },
+    { id: 'snes-aladdin', nome: 'Disney\'s Aladdin', console: 'SNES', capa: '/aladdin.jpg' },
+    { id: 'snes-rrr', nome: 'Rock n\' Roll Racing', console: 'SNES', capa: '/rrr.jpg' }
   ];
 
   const jogarAleatorio = () => {
@@ -113,9 +88,7 @@ const Home = () => {
     navigate(`/jogar/${jogoSorteado.id}`); 
   };
 
-  const categorias = [
-    'Todos', '❤️ Favoritos', 'SNES', 'NES', 'MASTER SYSTEM', 'MEGA DRIVE', 'GBA', 'PLAYSTATION 1', 'NINTENDO 64', 'GAME BOY', 'ATARI'
-  ];
+  const categorias = ['Todos', '❤️ Favoritos', 'SNES', 'NES', 'MASTER SYSTEM', 'MEGA DRIVE', 'GBA', 'PLAYSTATION 1', 'NINTENDO 64', 'GAME BOY', 'ATARI'];
 
   const jogosFiltrados = jogos.filter(jogo => {
     const bateBusca = jogo.nome.toLowerCase().includes(busca.toLowerCase());
@@ -129,8 +102,70 @@ const Home = () => {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'linear-gradient(to bottom, #121212, #1a1a2e)', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', width: '100%', flex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'linear-gradient(to bottom, #121212, #1a1a2e)', fontFamily: '"Inter", sans-serif', position: 'relative' }}>
+      
+      {/* --- BARRA SUPERIOR DE USUÁRIO (AGORA COM FUNDO) --- */}
+      <div style={{ 
+          position: 'fixed', // Fixa no topo pra sempre aparecer
+          top: 0, 
+          left: 0,
+          right: 0,
+          padding: '15px 30px',
+          background: 'rgba(18, 18, 18, 0.95)', // Fundo escuro levemente transparente
+          borderBottom: '1px solid #333',
+          zIndex: 100, 
+          display: 'flex', 
+          justifyContent: 'flex-end', // Joga tudo pra direita
+          alignItems: 'center',
+          gap: '15px'
+      }}>
+        {session ? (
+          <>
+            {/* MOSTRADOR DE PONTOS */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#000', padding: '6px 15px', borderRadius: '20px', border: '1px solid #fca311' }}>
+                <Coins size={16} color="#fca311" />
+                <span style={{ color: '#fca311', fontWeight: 'bold', fontSize: '0.9rem' }}>{pontos}</span>
+            </div>
+
+            {/* BOTÃO DE PERFIL (CLARO E VISÍVEL) */}
+            <Link to="/perfil">
+                <button style={{ 
+                    background: '#252525', 
+                    color: '#fff', 
+                    border: '1px solid #666', 
+                    padding: '8px 16px', 
+                    borderRadius: '20px', 
+                    cursor: 'pointer', 
+                    fontWeight: 'bold', 
+                    fontSize: '0.85rem', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    transition: '0.2s'
+                }}
+                onMouseEnter={(e) => {e.currentTarget.style.borderColor = '#fca311'; e.currentTarget.style.color = '#fca311'}}
+                onMouseLeave={(e) => {e.currentTarget.style.borderColor = '#666'; e.currentTarget.style.color = '#fff'}}
+                >
+                    <User size={16} /> 
+                    {nomeUsuario || "Meu Perfil"}
+                </button>
+            </Link>
+
+            {/* BOTÃO SAIR */}
+            <button onClick={handleLogout} title="Sair da Conta" style={{ background: '#333', color: '#ff4d4d', border: '1px solid #444', padding: '8px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <LogOut size={16} />
+            </button>
+          </>
+        ) : (
+          <Link to="/login">
+              <button style={{ background: 'linear-gradient(45deg, #fca311, #ffc300)', color: '#1a1a2e', border: 'none', padding: '10px 20px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.3)' }}>
+                  <User size={16} /> ENTRAR
+              </button>
+          </Link>
+        )}
+      </div>
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px 40px 20px', width: '100%', flex: 1 }}> {/* Aumentei o padding top pra 100px pra barra não tampar o logo */}
         <header style={{ textAlign: 'center', marginBottom: '40px' }}>
           <img src="/logo.jpg" alt="Sopra Fitas Logo" style={{ maxWidth: '350px', width: '100%', height: 'auto', filter: 'drop-shadow(0 0 15px rgba(255, 165, 0, 0.2))' }} />
 
