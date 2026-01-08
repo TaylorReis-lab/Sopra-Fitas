@@ -4,7 +4,8 @@ import Home from './pages/Home';
 import GameRoom from './pages/GameRoom';
 import Login from './pages/Login';
 import Perfil from './pages/Perfil';
-import Ranking from './pages/Ranking'; // O novo integrante!
+import Ranking from './pages/Ranking';
+import AdminMissoes from './pages/AdminMissoes'; // <--- O Painel do GM
 
 function App() {
   return (
@@ -22,8 +23,11 @@ function App() {
         {/* Rota de Perfil */}
         <Route path="/perfil" element={<Perfil />} />
 
-        {/* Rota de Ranking (NOVA) */}
+        {/* Rota de Ranking */}
         <Route path="/ranking" element={<Ranking />} />
+
+        {/* Rota de Admin (Painel do GM) */}
+        <Route path="/admin" element={<AdminMissoes />} /> 
       </Routes>
     </Router>
   );

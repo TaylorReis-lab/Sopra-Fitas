@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Emulator from '../components/Emulator';
-import { Calendar, Gamepad, Info, ArrowRight, Download, Upload, RotateCcw, Maximize, Camera } from 'lucide-react';
+import { supabase } from '../supabaseClient';
+import { Calendar, Gamepad, Info, ArrowRight, Download, Upload, RotateCcw, Maximize, Trophy, CheckCircle, AlertTriangle, X, Loader2 } from 'lucide-react';
 
 const GameRoom = () => {
   const { gameId } = useParams();
+  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // --- ESTADOS PARA MISSÃO ---
+  const [modalAberto, setModalAberto] = useState(false);
+  const [arquivo, setArquivo] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
     return () => window.removeEventListener('resize', handleResize);
   }, [gameId]);
 
@@ -24,20 +33,6 @@ const GameRoom = () => {
     if (elem) {
       if (elem.requestFullscreen) elem.requestFullscreen();
       else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-    }
-  };
-
-  const capturarConquista = () => {
-    const canvas = document.querySelector('#tela-do-jogo canvas');
-    if (canvas) {
-      const printDaTela = canvas.toDataURL("image/png");
-      const link = document.createElement('a');
-      link.download = `conquista-sopra-fitas-${gameId}.png`;
-      link.href = printDaTela;
-      link.click();
-      alert("📸 Tela capturada! O download da imagem começou.");
-    } else {
-      alert("⚠️ Erro: Não consegui capturar a tela. O jogo está rodando?");
     }
   };
 
@@ -152,7 +147,6 @@ const GameRoom = () => {
       capa: '/dkc.png',
       descricao: 'Junte-se a Donkey Kong e Diddy Kong nesta aventura revolucionária com gráficos pré-renderizados que marcaram época. Recupere suas bananas do Rei K. Rool!'
     },
-    // --- NOVOS JOGOS ---
     'snes-aladdin': {        
       id: 'snes-aladdin',
       url: '/aladdin.sfc',     
@@ -179,6 +173,42 @@ const GameRoom = () => {
   const outrosJogos = Object.values(gamesDb).filter(jogo => jogo.id !== gameId);
   const relacionados = outrosJogos.slice(0, 2);
 
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!arquivo) return alert("Selecione um print primeiro!");
+    if (!session) return alert("Você precisa estar logado!");
+
+    setUploading(true);
+    try {
+      const fileExt = arquivo.name.split('.').pop();
+      const fileName = `${session.user.id}_${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage.from('prints').upload(fileName, arquivo);
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('prints').getPublicUrl(fileName);
+
+      const { error: dbError } = await supabase.from('missoes').insert({
+          user_id: session.user.id,
+          game_id: gameId,
+          game_nome: jogoAtual.nome,
+          print_url: publicUrl,
+          status: 'pendente'
+        });
+
+      if (dbError) throw dbError;
+
+      alert("Missão enviada! 🚀 O GM analisará seu print.");
+      setModalAberto(false);
+      setArquivo(null);
+
+    } catch (error) {
+      alert("Erro ao enviar: " + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '100vh', background: '#121212', color: 'white', fontFamily: '"Inter", sans-serif', justifyContent: 'center' }}>
       
@@ -197,13 +227,19 @@ const GameRoom = () => {
              </div>
 
              <div style={{ width: '100%', background: '#252525', padding: '10px', borderRadius: '0 0 10px 10px', border: '2px solid #333', borderTop: '1px solid #444', marginBottom: '20px', display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                <button onClick={salvarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem' }}><Download size={16} /> Salvar</button>
-                <button onClick={carregarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem' }}><Upload size={16} /> Load</button>
-                <button onClick={reiniciarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem' }}><RotateCcw size={16} /> Reset</button>
-                <button onClick={telaCheia} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem' }}><Maximize size={16} /> Full</button>
+                <button onClick={salvarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', cursor: 'pointer' }}><Download size={16} /> Salvar</button>
+                <button onClick={carregarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', cursor: 'pointer' }}><Upload size={16} /> Load</button>
+                <button onClick={reiniciarJogo} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', cursor: 'pointer' }}><RotateCcw size={16} /> Reset</button>
+                <button onClick={telaCheia} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#333', color: 'white', border: '1px solid #555', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', cursor: 'pointer' }}><Maximize size={16} /> Full</button>
                 
-                <button onClick={capturarConquista} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'linear-gradient(45deg, #ffc300, #fca311)', color: '#1a1a2e', border: 'none', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer' }}>
-                  <Camera size={16} /> Print
+                <button 
+                  onClick={() => {
+                      if(!session) return alert("Faça login para reivindicar!");
+                      setModalAberto(true);
+                  }} 
+                  style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'linear-gradient(45deg, #00d4ff, #0056b3)', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 10px rgba(0, 212, 255, 0.4)' }}
+                >
+                  <Trophy size={16} /> Reivindicar Pontos
                 </button>
              </div>
              
@@ -260,6 +296,68 @@ const GameRoom = () => {
         <h4 style={{ color: '#555', marginBottom: '10px' }}>Publicidade</h4>
         <div style={{ width: '100%', height: '200px', background: '#252525', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>Ad Space</div>
       </aside>
+
+      {/* --- MODAL DE ENVIO DE MISSÃO --- */}
+      {modalAberto && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div style={{ background: '#252525', width: '100%', maxWidth: '500px', borderRadius: '20px', border: '1px solid #444', padding: '30px', position: 'relative', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}>
+                
+                <button onClick={() => setModalAberto(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer' }}>
+                    <X size={24} />
+                </button>
+
+                <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '10px' }}>Enviar Prova</h2>
+                
+                {/* AVISO IMPORTANTE COM INSTRUÇÃO DE PRINT */}
+                <div style={{ background: 'rgba(252, 163, 17, 0.1)', border: '1px solid #fca311', borderRadius: '10px', padding: '15px', marginBottom: '25px' }}>
+                    <h4 style={{ color: '#fca311', margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <AlertTriangle size={18} /> Instruções de Validação:
+                    </h4>
+                    <ul style={{ color: '#ccc', fontSize: '0.9rem', textAlign: 'left', margin: 0, paddingLeft: '20px', lineHeight: '1.6' }}>
+                        <li>Zere o jogo e tire um print da <strong>tela final</strong>.</li>
+                        <li><strong>No PC:</strong> Use <span style={{color: '#fff', fontWeight: 'bold', background: '#333', padding: '2px 6px', borderRadius: '4px'}}>Win + Shift + S</span> para capturar a tela.</li>
+                        <li><strong>No Celular:</strong> Use o print nativo do aparelho.</li>
+                        <li>Prints falsos ou editados resultarão em <strong>perda de pontos</strong>.</li> {/* <--- TEXTO ALTERADO AQUI */}
+                    </ul>
+                </div>
+
+                <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ border: '2px dashed #444', borderRadius: '10px', padding: '30px', textAlign: 'center', cursor: 'pointer', background: '#1e1e1e' }}>
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            id="fileInput"
+                            onChange={(e) => setArquivo(e.target.files[0])}
+                            style={{ display: 'none' }} 
+                        />
+                        <label htmlFor="fileInput" style={{ cursor: 'pointer', display: 'block' }}>
+                            {arquivo ? (
+                                <div style={{ color: '#4caf50', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                                    <CheckCircle size={40} />
+                                    <span>{arquivo.name}</span>
+                                </div>
+                            ) : (
+                                <div style={{ color: '#aaa', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                                    <Upload size={40} />
+                                    <span>Clique para selecionar o Print</span>
+                                </div>
+                            )}
+                        </label>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={uploading || !arquivo}
+                        style={{ background: uploading ? '#666' : 'linear-gradient(45deg, #fca311, #ffc300)', color: '#1a1a2e', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold', fontSize: '1rem', cursor: uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                    >
+                        {uploading ? <><Loader2 className="animate-spin" /> Enviando...</> : 'ENVIAR PARA ANÁLISE'}
+                    </button>
+                </form>
+
+            </div>
+        </div>
+      )}
+
     </div>
   );
 };
