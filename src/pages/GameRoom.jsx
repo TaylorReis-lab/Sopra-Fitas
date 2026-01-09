@@ -3,13 +3,13 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Emulator from '../components/Emulator';
 import { supabase } from '../supabaseClient';
 import { Calendar, Gamepad, Info, ArrowRight, Download, Upload, RotateCcw, Maximize, Trophy, CheckCircle, AlertTriangle, X, Loader2 } from 'lucide-react';
+import AnuncioLateral from '../components/AnuncioLateral'; 
 
 const GameRoom = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // --- ESTADOS PARA MISSÃO ---
   const [modalAberto, setModalAberto] = useState(false);
   const [arquivo, setArquivo] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -212,9 +212,14 @@ const GameRoom = () => {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '100vh', background: '#121212', color: 'white', fontFamily: '"Inter", sans-serif', justifyContent: 'center' }}>
       
-      <aside style={{ width: isMobile ? '100%' : '250px', background: '#1e1e1e', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', borderRight: isMobile ? 'none' : '1px solid #333', borderBottom: isMobile ? '1px solid #333' : 'none', order: isMobile ? 3 : 1 }}>
+      {/* BARRA LATERAL ESQUERDA - Anúncio 300x250 */}
+      <aside style={{ width: isMobile ? '100%' : '300px', background: '#1e1e1e', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', borderRight: isMobile ? 'none' : '1px solid #333', borderBottom: isMobile ? '1px solid #333' : 'none', order: isMobile ? 3 : 1 }}>
         <h4 style={{ color: '#555', marginBottom: '10px' }}>Publicidade</h4>
-        <div style={{ width: '100%', height: '200px', background: '#252525', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>Ad Space</div>
+        <AnuncioLateral 
+           adKey="658f27ccb9910421c7c8e05c3a696689" 
+           width={300} 
+           height={250} 
+        />
       </aside>
 
       <main style={{ flex: 1, minWidth: '320px', maxWidth: '1000px', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px', position: 'relative', order: 2 }}>
@@ -292,23 +297,23 @@ const GameRoom = () => {
         <Link to="/" style={{ position: 'absolute', top: '20px', left: '20px', color: '#aaa', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px', background: '#1e1e1e', padding: '8px 15px', borderRadius: '20px', border: '1px solid #333', zIndex: 50 }}><span>←</span></Link>
       </main>
 
+      {/* BARRA LATERAL DIREITA - Anúncio 160x300 */}
       <aside style={{ width: isMobile ? '100%' : '250px', background: '#1e1e1e', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', borderLeft: isMobile ? 'none' : '1px solid #333', order: isMobile ? 4 : 3 }}>
         <h4 style={{ color: '#555', marginBottom: '10px' }}>Publicidade</h4>
-        <div style={{ width: '100%', height: '200px', background: '#252525', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>Ad Space</div>
+        <AnuncioLateral 
+           adKey="5092535fc1596467a82107692be85254" 
+           width={160} 
+           height={300} 
+        />
       </aside>
 
-      {/* --- MODAL DE ENVIO DE MISSÃO --- */}
       {modalAberto && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
             <div style={{ background: '#252525', width: '100%', maxWidth: '500px', borderRadius: '20px', border: '1px solid #444', padding: '30px', position: 'relative', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}>
-                
                 <button onClick={() => setModalAberto(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer' }}>
                     <X size={24} />
                 </button>
-
                 <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '10px' }}>Enviar Prova</h2>
-                
-                {/* AVISO IMPORTANTE COM INSTRUÇÃO DE PRINT */}
                 <div style={{ background: 'rgba(252, 163, 17, 0.1)', border: '1px solid #fca311', borderRadius: '10px', padding: '15px', marginBottom: '25px' }}>
                     <h4 style={{ color: '#fca311', margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <AlertTriangle size={18} /> Instruções de Validação:
@@ -317,10 +322,9 @@ const GameRoom = () => {
                         <li>Zere o jogo e tire um print da <strong>tela final</strong>.</li>
                         <li><strong>No PC:</strong> Use <span style={{color: '#fff', fontWeight: 'bold', background: '#333', padding: '2px 6px', borderRadius: '4px'}}>Win + Shift + S</span> para capturar a tela.</li>
                         <li><strong>No Celular:</strong> Use o print nativo do aparelho.</li>
-                        <li>Prints falsos ou editados resultarão em <strong>perda de pontos</strong>.</li> {/* <--- TEXTO ALTERADO AQUI */}
+                        <li>Prints falsos ou editados resultarão em <strong>perda de pontos</strong>.</li>
                     </ul>
                 </div>
-
                 <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div style={{ border: '2px dashed #444', borderRadius: '10px', padding: '30px', textAlign: 'center', cursor: 'pointer', background: '#1e1e1e' }}>
                         <input 
@@ -344,7 +348,6 @@ const GameRoom = () => {
                             )}
                         </label>
                     </div>
-
                     <button 
                         type="submit" 
                         disabled={uploading || !arquivo}
@@ -353,11 +356,9 @@ const GameRoom = () => {
                         {uploading ? <><Loader2 className="animate-spin" /> Enviando...</> : 'ENVIAR PARA ANÁLISE'}
                     </button>
                 </form>
-
             </div>
         </div>
       )}
-
     </div>
   );
 };
