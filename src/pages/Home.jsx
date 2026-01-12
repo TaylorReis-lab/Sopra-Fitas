@@ -75,7 +75,7 @@ const Home = () => {
     }
   };
 
-  // --- LISTA COMPLETA DE JOGOS (CAPAS CORRIGIDAS) ---
+  // --- LISTA COMPLETA DE JOGOS ---
   const jogos = [
     // MASTER SYSTEM
     { id: 'sms-sonic', nome: 'Sonic The Hedgehog', console: 'MASTER SYSTEM', core: 'smsplus', gameUrl: '/sonicthehedgehog.sms', capa: 'https://upload.wikimedia.org/wikipedia/en/b/ba/Sonic_the_Hedgehog_1_Genesis_box_art.jpg' },

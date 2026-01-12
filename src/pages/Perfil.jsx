@@ -8,7 +8,8 @@ const Perfil = () => {
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState('');
   const [pontos, setPontos] = useState(0);
-  const [role, setRole] = useState('user'); // Estado para guardar se é admin
+  const [role, setRole] = useState('user');
+  const [updating, setUpdating] = useState(false); // Novo: estado para o carregamento do botão
 
   useEffect(() => {
     getProfile();
@@ -20,16 +21,37 @@ const Perfil = () => {
 
     const { data } = await supabase
       .from('profiles')
-      .select('nome, pontos, role') // Buscando a role do banco
+      .select('nome, pontos, role')
       .eq('id', session.user.id)
       .single();
 
     if (data) {
       setNome(data.nome || '');
       setPontos(data.pontos);
-      setRole(data.role); // Define se é admin ou user
+      setRole(data.role);
     }
     setLoading(false);
+  };
+
+  // --- FUNÇÃO ADICIONADA: AGORA O BOTÃO FUNCIONA! ---
+  const updateProfile = async () => {
+    setUpdating(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ nome: nome }) // Envia o novo nick
+        .eq('id', session.user.id);
+
+      if (error) throw error;
+      alert('Nickname atualizado com sucesso! ✅');
+    } catch (error) {
+      console.error('Erro ao atualizar:', error);
+      alert('Erro ao atualizar o nome. Verifique se o banco permite a alteração.');
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Carregando...</div>;
@@ -53,7 +75,6 @@ const Perfil = () => {
                 <Link to="/ranking" style={{textDecoration: 'none'}}><div style={statBox}><Trophy color="#00d4ff" /><div style={{fontSize: '1.2rem'}}>Ver</div><small>Ranking</small></div></Link>
             </div>
 
-            {/* BOTÃO MÁGICO: Só aparece se role for admin */}
             {role === 'admin' && (
                 <Link to="/admin-dashboard" style={{ textDecoration: 'none' }}>
                     <button style={{ width: '100%', padding: '15px', background: 'linear-gradient(45deg, #fca311, #ffc300)', border: 'none', borderRadius: '10px', color: '#1a1a2e', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
@@ -62,8 +83,25 @@ const Perfil = () => {
                 </Link>
             )}
 
-            <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} style={inputStyle} placeholder="Nickname" />
-            <button style={btnStyle}>Atualizar Nickname</button>
+            <input 
+              type="text" 
+              value={nome} 
+              onChange={(e) => setNome(e.target.value)} 
+              style={inputStyle} 
+              placeholder="Nickname" 
+            />
+
+            <button 
+              onClick={updateProfile} // Conectamos a função aqui!
+              disabled={updating}
+              style={{
+                ...btnStyle, 
+                opacity: updating ? 0.5 : 1,
+                cursor: updating ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {updating ? 'Salvando...' : 'Atualizar Nickname'}
+            </button>
         </div>
       </div>
     </div>
@@ -72,6 +110,6 @@ const Perfil = () => {
 
 const statBox = { background: '#252525', padding: '15px', borderRadius: '12px', flex: 1, border: '1px solid #333' };
 const inputStyle = { width: '100%', padding: '12px', background: '#252525', border: '1px solid #444', borderRadius: '8px', color: 'white', marginBottom: '15px' };
-const btnStyle = { width: '100%', padding: '12px', background: 'transparent', border: '1px solid #fca311', borderRadius: '10px', color: '#fca311', fontWeight: 'bold', cursor: 'pointer' };
+const btnStyle = { width: '100%', padding: '12px', background: 'transparent', border: '1px solid #fca311', borderRadius: '10px', color: '#fca311', fontWeight: 'bold' };
 
 export default Perfil;
