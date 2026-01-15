@@ -13,6 +13,8 @@ import {
   Trophy,
   Crown,
   Medal,
+  Target, // Ícone novo para missões
+  Star,
 } from 'lucide-react';
 import { games } from '../constants/games';
 
@@ -22,7 +24,9 @@ const Home = () => {
   const [pontos, setPontos] = useState(0);
   const [nomeUsuario, setNomeUsuario] = useState('');
   const [ranking, setRanking] = useState([]);
+  const [missoes, setMissoes] = useState([]); // ESTADO PARA AS MISSÕES
   const [loadingRanking, setLoadingRanking] = useState(true);
+  const [loadingMissoes, setLoadingMissoes] = useState(true); // LOADING DAS MISSÕES
   const [loadingGames, setLoadingGames] = useState(true);
   const [jogos, setJogos] = useState(games);
   const [busca, setBusca] = useState('');
@@ -41,9 +45,8 @@ const Home = () => {
     const fetchJogos = async () => {
       try {
         const { data, error } = await supabase.from('jogos').select('*');
-
         if (error) throw error;
-        if (data.length > 0) {
+        if (data && data.length > 0) {
           setJogos([...data, ...games]);
         }
       } catch (error) {
@@ -52,7 +55,6 @@ const Home = () => {
         setLoadingGames(false);
       }
     };
-
     fetchJogos();
   }, []);
 
@@ -60,7 +62,7 @@ const Home = () => {
     const fetchDados = async (userId) => {
       const { data: perfil } = await supabase
         .from('profiles')
-        .select('pontos', 'nome')
+        .select('pontos, nome')
         .eq('id', userId)
         .single();
       if (perfil) {
@@ -80,7 +82,19 @@ const Home = () => {
       setLoadingRanking(false);
     };
 
+    // BUSCAR MISSÕES DO MÊS - CORRIGIDO NOME DA TABELA E REMOVIDO LIMIT
+    const fetchMissoes = async () => {
+      setLoadingMissoes(true);
+      const { data } = await supabase
+        .from('missoes_globais') // Nome correto conforme seu print do banco
+        .select('*')
+        .order('created_at', { ascending: false }); // Pega todos os desafios
+      if (data) setMissoes(data);
+      setLoadingMissoes(false);
+    };
+
     fetchRanking();
+    fetchMissoes();
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -108,11 +122,9 @@ const Home = () => {
   };
 
   const toggleFavorito = (id) => {
-    if (favoritos.includes(id)) {
-      setFavoritos(favoritos.filter((favId) => favId !== id));
-    } else {
-      setFavoritos([...favoritos, id]);
-    }
+    setFavoritos((prev) =>
+      prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]
+    );
   };
 
   const jogarAleatorio = () => {
@@ -136,7 +148,8 @@ const Home = () => {
   ];
 
   const jogosFiltrados = jogos.filter((jogo) => {
-    const bateBusca = jogo.nome?.toLowerCase().includes(busca.toLowerCase());
+    const nomeJogo = jogo.nome || '';
+    const bateBusca = nomeJogo.toLowerCase().includes(busca.toLowerCase());
     let bateCategoria = true;
     if (filtroConsole === '❤️ Favoritos') {
       bateCategoria = favoritos.includes(jogo.id);
@@ -165,6 +178,7 @@ const Home = () => {
         minHeight: '100vh',
         background: 'linear-gradient(to bottom, #121212, #1a1a2e)',
         fontFamily: '"Inter", sans-serif',
+        color: 'white',
       }}
     >
       {/* HEADER FIXO */}
@@ -198,13 +212,7 @@ const Home = () => {
               }}
             >
               <Coins size={16} color="#fca311" />
-              <span
-                style={{
-                  color: '#fca311',
-                  fontWeight: 'bold',
-                  fontSize: '0.9rem',
-                }}
-              >
+              <span style={{ color: '#fca311', fontWeight: 'bold', fontSize: '0.9rem' }}>
                 {pontos}
               </span>
             </div>
@@ -277,16 +285,82 @@ const Home = () => {
           }}
         >
           <div style={{ position: 'relative', display: 'inline-block' }}>
+            
+            {/* TABELA DE DESAFIOS DO MÊS */}
+            <div
+              style={{
+                position: 'absolute',
+                left: '-750px', 
+                top: '10px',
+                width: '260px',
+                background: 'rgba(20, 20, 20, 0.9)',
+                border: '1px solid #b77a09', 
+                borderRadius: '12px',
+                padding: '15px',
+                textAlign: 'left',
+                boxShadow: '0 4px 15px rgba(224, 168, 16, 0.3)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderBottom: '1px solid #333',
+                  paddingBottom: '5px',
+                  marginBottom: '10px',
+                }}
+              >
+                <Target size={18} color="#ad630f" />
+                <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.85rem' }}>
+                  DESAFIOS DO MÊS
+                </span>
+              </div>
+              
+              {loadingMissoes ? (
+                <span style={{ color: '#666', fontSize: '0.8rem' }}>Buscando missões...</span>
+              ) : missoes.length === 0 ? (
+                <span style={{ color: '#555', fontSize: '0.75rem' }}>Nenhum desafio no momento.</span>
+              ) : (
+                missoes.map((missao, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      padding: '8px',
+                      borderRadius: '6px',
+                      marginBottom: '8px',
+                      borderLeft: '3px solid #b78009'
+                    }}
+                  >
+                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#7209b7', marginBottom: '2px' }}>
+                      {missao.titulo}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#aaa', lineHeight: '1.2' }}>
+                      {missao.objetivo}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                       <Star size={10} color="#fca311" fill="#fca311" />
+                       <span style={{ fontSize: '0.7rem', color: '#fca311', fontWeight: 'bold' }}>
+                         +{missao.recompensa} pts
+                       </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
             <img
               src="/logo.jpg"
               alt="Logo"
               style={{ maxWidth: '350px', width: '100%' }}
             />
+
             {/* RANKING LATERAL */}
             <div
               style={{
                 position: 'absolute',
-                right: '-300px',
+                right: '-750px', 
                 top: '10px',
                 width: '240px',
                 background: 'rgba(30, 30, 30, 0.9)',
@@ -294,6 +368,7 @@ const Home = () => {
                 borderRadius: '12px',
                 padding: '15px',
                 textAlign: 'left',
+                boxShadow: '0 4px 15px rgba(168, 99, 9, 0.5)',
               }}
             >
               <div
@@ -305,24 +380,18 @@ const Home = () => {
                   marginBottom: '8px',
                 }}
               >
-                <span
-                  style={{
-                    color: '#fca311',
-                    fontWeight: 'bold',
-                    fontSize: '0.85rem',
-                  }}
-                >
+                <span style={{ color: '#fca311', fontWeight: 'bold', fontSize: '0.85rem' }}>
                   TOP 5
                 </span>
                 <Link
                   to="/ranking"
-                  style={{ fontSize: '0.7rem', color: '#888' }}
+                  style={{ fontSize: '0.7rem', color: '#888', textDecoration: 'none' }}
                 >
                   Ver tudo
                 </Link>
               </div>
               {loadingRanking ? (
-                <span style={{ color: '#666' }}>Carregando...</span>
+                <span style={{ color: '#666', fontSize: '0.8rem' }}>Carregando...</span>
               ) : (
                 ranking.map((user, idx) => (
                   <div
@@ -331,13 +400,13 @@ const Home = () => {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: '0.8rem',
-                      padding: '4px 0',
+                      padding: '6px 0',
                     }}
                   >
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                       {getIconeRank(idx)} <span>{user.nome || '---'}</span>
                     </div>
-                    <span style={{ color: '#fca311' }}>{user.pontos}</span>
+                    <span style={{ color: '#fca311', fontWeight: 'bold' }}>{user.pontos}</span>
                   </div>
                 ))
               )}

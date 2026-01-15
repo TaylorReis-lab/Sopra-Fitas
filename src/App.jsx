@@ -10,7 +10,8 @@ import Ranking from './pages/Ranking';
 import AdminDashboard from './pages/AdminDashboard'; // O portal central
 import AdminMissoes from './pages/AdminMissoes';
 import AdminJogos from './pages/AdminJogos';
-import AdminUsuarios from './pages/AdminUsuarios'; // <-- ADICIONE ESTE IMPORT
+import AdminUsuarios from './pages/AdminUsuarios';
+import AdminDesafios from './pages/AdminDesafios'; // <-- IMPORTADO PARA FUNCIONAR O CLIQUE
 
 function App() {
   return (
@@ -33,13 +34,16 @@ function App() {
         {/* Painel Central do Administrador */}
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-        {/* Validação de Missões (Prints) */}
+        {/* Lançar Desafios Globais (Novas missões do topo) */}
+        <Route path="/admin-desafios" element={<AdminDesafios />} />
+
+        {/* Validação de Missões (Prints enviados pelos players) */}
         <Route path="/admin-missoes" element={<AdminMissoes />} />
 
         {/* Painel para Upar e Gerenciar Jogos */}
         <Route path="/painel-admin-jogos" element={<AdminJogos />} />
 
-        {/* NOVA ROTA: Controle de Usuários (Vigiar o Marcos kkk) */}
+        {/* Controle de Usuários */}
         <Route path="/admin-usuarios" element={<AdminUsuarios />} />
       </Routes>
     </Router>

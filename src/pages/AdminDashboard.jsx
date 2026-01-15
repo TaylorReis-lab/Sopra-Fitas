@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   LayoutDashboard,
   UserPlus,
+  Target, // Importado para o novo botão de desafios
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -83,7 +84,7 @@ const AdminDashboard = () => {
       }}
     >
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-        {/* BOTÃO VOLTAR: Agora aponta para o Perfil */}
+        {/* BOTÃO VOLTAR */}
         <Link
           to="/perfil"
           style={{
@@ -190,6 +191,16 @@ const AdminDashboard = () => {
             desc="Adicionar novos consoles, ROMs e capas de fitas."
             color="#fca311"
           />
+          
+          {/* AQUI ESTÁ O NOVO BOTÃO DE DESAFIOS QUE VOCÊ PEDIU */}
+          <MenuButton
+            to="/admin-desafios"
+            icon={<Target size={32} />}
+            title="Lançar Desafios"
+            desc="Criar as 3 missões especiais que aparecem no topo da Home."
+            color="#7209b7"
+          />
+
           <MenuButton
             to="/admin-missoes"
             icon={<CheckSquare size={32} />}

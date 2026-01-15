@@ -76,22 +76,6 @@ export const games = [
     capa_url: '/dkc.png',
   },
   {
-    id: 'snes-earthworm-jim',
-    nome: 'Earthworm Jim',
-    console: 'SNES',
-    core: 'snes9x',
-    rom_url: '/earthworm-jim.sfc',
-    capa_url: '/earthworm-jim.jpg',
-  },
-  {
-    id: 'snes-earthworm-jim2',
-    nome: 'Earthworm Jim 2',
-    console: 'SNES',
-    core: 'snes9x',
-    rom_url: '/earthworm-jim-2.sfc',
-    capa_url: '/earthworm-jim-2.jpg',
-  },
-  {
     id: 'snes-fatal-fury2',
     nome: 'Fatal Fury 2',
     console: 'SNES',
@@ -156,28 +140,12 @@ export const games = [
     capa_url: '/megaman-x3.jpg',
   },
   {
-    id: 'snes-mk2',
-    nome: 'Mortal Kombat 2',
-    console: 'SNES',
-    core: 'snes9x',
-    rom_url: '/mortal-kombat-2.sfc',
-    capa_url: '/mortal-kombat-2.jpg',
-  },
-  {
     id: 'snes-rrr',
     nome: "Rock n' Roll Racing",
     console: 'SNES',
     core: 'snes9x',
     rom_url: '/rrr.sfc',
     capa_url: '/rrr.jpg',
-  },
-  {
-    id: 'snes-sf2-turbo',
-    nome: 'Street Fighter II Turbo',
-    console: 'SNES',
-    core: 'snes9x',
-    rom_url: '/sf2-turbo.sfc',
-    capa_url: '/sf2-turbo.jpg',
   },
   {
     id: 'snes-supermarioworld',
@@ -195,81 +163,6 @@ export const games = [
     core: 'snes9x',
     rom_url: '/topgear.smc',
     capa_url: '/Capa_de_Top_Gear.jpg',
-  },
-  {
-    id: 'snes-zelda-lttp',
-    nome: 'The Legend of Zelda: A Link to the Past',
-    console: 'SNES',
-    core: 'snes9x',
-    rom_url: '/zelda-link-to-the-past.sfc',
-    capa_url: '/zelda-link-to-the-past.jpg',
-  },
-
-  // MEGA DRIVE
-  {
-    id: 'md-goldenaxe',
-    nome: 'Golden Axe',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/goldenaxe.smd',
-    capa_url: '/goldenaxe.jpg',
-  },
-  {
-    id: 'md-goldenaxe2',
-    nome: 'Golden Axe 2',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/goldenaxe2.smd',
-    capa_url: '/goldenaxe2.jpg',
-  },
-  {
-    id: 'md-mk3',
-    nome: 'Mortal Kombat 3',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/MortalKombat3.smd',
-    capa_url: '/ultimate-mortal-kombat-3-capa_url.webp',
-  },
-  {
-    id: 'md-show-do-milhao',
-    nome: 'Show do Milhão',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/show-do-milhao.smd',
-    capa_url: '/show-do-milhao.jpg',
-  },
-  {
-    id: 'md-sonic2',
-    nome: 'Sonic The Hedgehog 2',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/sonicthehedgehog2.smd',
-    capa_url:
-      'https://upload.wikimedia.org/wikipedia/en/0/0c/Sonic_2_US_Cover.jpg',
-  },
-  {
-    id: 'md-streets-of-rage',
-    nome: 'Streets of Rage',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/Streets_of_Rage.smd',
-    capa_url: '/Streets_of_Rage.jpg',
-  },
-  {
-    id: 'md-streets-of-rage2',
-    nome: 'Streets of Rage 2',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/streetofrage2.smd',
-    capa_url: '/streetofrage2.jpg',
-  },
-  {
-    id: 'md-xmen2-clonewars',
-    nome: 'X-Men 2: Clone Wars',
-    console: 'MEGA DRIVE',
-    core: 'genesis_plus_gx',
-    rom_url: '/xmen2clonewars.smd',
-    capa_url: '/xmen2clonewars.jpg',
   },
 
   // NES
@@ -339,7 +232,6 @@ export const games = [
   },
 ];
 
-// --- BANCO DE DADOS COMPLETO COM CAPAS CORRIGIDAS (.jpg/png) ---
 export const gamesDb = {
   // MASTER SYSTEM
   'sms-sonic': {
@@ -349,7 +241,7 @@ export const gamesDb = {
     nome: 'Sonic The Hedgehog',
     ano: '1991',
     fabricante: 'SEGA',
-    capa_url: '/sonicthehedgehog.jpg', // Corrigido
+    capa_url: '/sonicthehedgehog.jpg',
     descricao: 'A estreia do ouriço mais rápido do mundo no Master System!',
   },
   'sms-alex-kidd': {
@@ -421,7 +313,7 @@ export const gamesDb = {
     nome: 'Contra III: The Alien Wars',
     ano: '1992',
     fabricante: 'Konami',
-    capa_url: '/contra-3.jpg', // Corrigido
+    capa_url: '/contra-3.jpg',
     descricao: 'A maior aventura dos Contra Brothers no futuro!',
   },
   'snes-dkc': {
@@ -431,28 +323,8 @@ export const gamesDb = {
     nome: 'Donkey Kong Country',
     ano: '1994',
     fabricante: 'Rare/Nintendo',
-    capa_url: '/dkc.jpg', // Corrigido
+    capa_url: '/dkc.jpg',
     descricao: 'Donkey e Diddy em uma aventura revolucionária em 3D!',
-  },
-  'snes-earthworm-jim': {
-    id: 'snes-earthworm-jim',
-    rom_url: '/earthworm-jim.sfc',
-    core: 'snes9x',
-    nome: 'Earthworm Jim',
-    ano: '1994',
-    fabricante: 'Shiny/Interplay',
-    capa_url: '/earthworm-jim.jpg', // Corrigido
-    descricao: 'O verme mais louco dos games com armas insanas!',
-  },
-  'snes-earthworm-jim2': {
-    id: 'snes-earthworm-jim2',
-    rom_url: '/earthworm-jim-2.sfc',
-    core: 'snes9x',
-    nome: 'Earthworm Jim 2',
-    ano: '1995',
-    fabricante: 'Shiny/Interplay',
-    capa_url: '/earthworm-jim-2.jpg', // Corrigido
-    descricao: 'Ainda mais louco! Jim vira sujo e voador!',
   },
   'snes-fatal-fury2': {
     id: 'snes-fatal-fury2',
@@ -461,7 +333,7 @@ export const gamesDb = {
     nome: 'Fatal Fury 2',
     ano: '1992',
     fabricante: 'SNK',
-    capa_url: '/fatal-fury-2.jpg', // Corrigido
+    capa_url: '/fatal-fury-2.jpg',
     descricao: 'Terry Bogard e cia no torneio do Rei das Trevas!',
   },
   'snes-goof-troop': {
@@ -471,7 +343,7 @@ export const gamesDb = {
     nome: 'Goof Troop',
     ano: '1993',
     fabricante: 'Capcom/Disney',
-    capa_url: '/goof-troop.jpg', // Corrigido
+    capa_url: '/goof-troop.jpg',
     descricao: 'Max e PJ salvam o Prefeito X com truques malucos!',
   },
   'snes-harvest-moon': {
@@ -481,7 +353,7 @@ export const gamesDb = {
     nome: 'Harvest Moon',
     ano: '1996',
     fabricante: 'Natsume',
-    capa_url: '/harvest-moon.jpg', // Corrigido
+    capa_url: '/harvest-moon.jpg',
     descricao: 'Reconstrua a fazenda e encontre o amor verdadeiro!',
   },
   'snes-kirbys-avalanche': {
@@ -491,7 +363,7 @@ export const gamesDb = {
     nome: "Kirby's Avalanche",
     ano: '1995',
     fabricante: 'HAL',
-    capa_url: '/kirbys-avalanche.jpg', // Corrigido
+    capa_url: '/kirbys-avalanche.jpg',
     descricao: 'Kirby no puzzle game estilo Puyo Puyo!',
   },
   'snes-kirby-super-star': {
@@ -501,7 +373,7 @@ export const gamesDb = {
     nome: 'Kirby Super Star',
     ano: '1996',
     fabricante: 'HAL/Nintendo',
-    capa_url: '/kirby-super-star.jpg', // Corrigido
+    capa_url: '/kirby-super-star.jpg',
     descricao: 'Múltiplas aventuras do Kirby rosa e faminto!',
   },
   'snes-megaman-x': {
@@ -511,7 +383,7 @@ export const gamesDb = {
     nome: 'Mega Man X',
     ano: '1993',
     fabricante: 'Capcom',
-    capa_url: '/megaman-x.jpg', // Corrigido
+    capa_url: '/megaman-x.jpg',
     descricao: 'O futuro dos Mavericks começa aqui com X!',
   },
   'snes-megaman-x2': {
@@ -521,7 +393,7 @@ export const gamesDb = {
     nome: 'Mega Man X2',
     ano: '1994',
     fabricante: 'Capcom',
-    capa_url: '/megaman-x2.jpg', // Corrigido
+    capa_url: '/megaman-x2.jpg',
     descricao: 'Wire Sponge, Wheel Gator e mais 6 Mavericks!',
   },
   'snes-megaman-x3': {
@@ -531,18 +403,8 @@ export const gamesDb = {
     nome: 'Mega Man X3',
     ano: '1995',
     fabricante: 'Capcom',
-    capa_url: '/megaman-x3.jpg', // Corrigido
+    capa_url: '/megaman-x3.jpg',
     descricao: 'O último grande X do SNES com escolhas morais!',
-  },
-  'snes-mk2': {
-    id: 'snes-mk2',
-    rom_url: '/mortal-kombat-2.sfc',
-    core: 'snes9x',
-    nome: 'Mortal Kombat 2',
-    ano: '1994',
-    fabricante: 'Midway',
-    capa_url: '/mortal-kombat-2.jpg', // Corrigido
-    descricao: 'O melhor MK2 com fatalities insanos!',
   },
   'snes-rrr': {
     id: 'snes-rrr',
@@ -551,18 +413,8 @@ export const gamesDb = {
     nome: "Rock n' Roll Racing",
     ano: '1993',
     fabricante: 'Blizzard',
-    capa_url: '/rrr.jpg', // Corrigido
+    capa_url: '/rrr.jpg',
     descricao: 'Acelere ao som de rock em corridas intergalácticas!',
-  },
-  'snes-sf2-turbo': {
-    id: 'snes-sf2-turbo',
-    rom_url: '/sf2-turbo.sfc',
-    core: 'snes9x',
-    nome: 'Street Fighter II Turbo',
-    ano: '1993',
-    fabricante: 'Capcom',
-    capa_url: '/sf2-turbo.jpg', // Corrigido
-    descricao: 'A versão mais rápida e equilibrada do clássico!',
   },
   'snes-supermarioworld': {
     id: 'snes-supermarioworld',
@@ -571,7 +423,7 @@ export const gamesDb = {
     nome: 'Super Mario World',
     ano: '1990',
     fabricante: 'Nintendo',
-    capa_url: '/supermarioworld.jpg', // Corrigido
+    capa_url: '/supermarioworld.jpg',
     descricao: 'O clássico absoluto que definiu o SNES!',
   },
   'snes-topgear': {
@@ -583,98 +435,6 @@ export const gamesDb = {
     fabricante: 'Kemco/Gremlin',
     capa_url: '/Capa_de_Top_Gear.jpg',
     descricao: 'O jogo de corrida mais amado do Brasil!',
-  },
-  'snes-zelda-lttp': {
-    id: 'snes-zelda-lttp',
-    rom_url: '/zelda-link-to-the-past.sfc',
-    core: 'snes9x',
-    nome: 'The Legend of Zelda: A Link to the Past',
-    ano: '1991',
-    fabricante: 'Nintendo',
-    capa_url: '/zelda-link-to-the-past.jpg', // Corrigido
-    descricao: 'A maior aventura de Link no mundo paralelo!',
-  },
-
-  // MEGA DRIVE
-  'md-goldenaxe': {
-    id: 'md-goldenaxe',
-    rom_url: '/goldenaxe.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Golden Axe',
-    ano: '1989',
-    fabricante: 'SEGA',
-    capa_url: '/goldenaxe.jpg',
-    descricao: 'Ax Battler, Gilius e Tyris Flare contra Death Adder!',
-  },
-  'md-goldenaxe2': {
-    id: 'md-goldenaxe2',
-    rom_url: '/goldenaxe2.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Golden Axe II',
-    ano: '1991',
-    fabricante: 'SEGA',
-    capa_url: '/goldenaxe2.jpg',
-    descricao: 'Dark Guld ameaça o mundo novamente!',
-  },
-  'md-mk3': {
-    id: 'md-mk3',
-    rom_url: '/MortalKombat3.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Mortal Kombat 3',
-    ano: '1995',
-    fabricante: 'Midway',
-    capa_url: '/ultimate-mortal-kombat-3-capa_url.webp',
-    descricao: 'Shao Kahn invade a Terra! Novos fatalities!',
-  },
-  'md-show-do-milhao': {
-    id: 'md-show-do-milhao',
-    rom_url: '/show-do-milhao.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Show do Milhão',
-    ano: '1993',
-    fabricante: 'Silmar',
-    capa_url: '/show-do-milhao.jpg', // Corrigido
-    descricao: 'Silvio Santos te desafia no quiz brasileiro!',
-  },
-  'md-sonic2': {
-    id: 'md-sonic2',
-    rom_url: '/sonicthehedgehog2.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Sonic The Hedgehog 2',
-    ano: '1992',
-    fabricante: 'SEGA',
-    capa_url: '/sonicthehedgehog2.jpg', // Corrigido
-    descricao: 'Sonic e Tails contra Robotnik em 8 zonas épicas!',
-  },
-  'md-streets-of-rage': {
-    id: 'md-streets-of-rage',
-    rom_url: '/Streets_of_Rage.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Streets of Rage',
-    ano: '1991',
-    fabricante: 'SEGA',
-    capa_url: '/Streets_of_Rage.jpg',
-    descricao: 'Axel, Adam e Blaze limpam as ruas!',
-  },
-  'md-streets-of-rage2': {
-    id: 'md-streets-of-rage2',
-    rom_url: '/streetofrage2.smd',
-    core: 'genesis_plus_gx',
-    nome: 'Streets of Rage 2',
-    ano: '1992',
-    fabricante: 'SEGA',
-    capa_url: '/streetofrage2.jpg',
-    descricao: 'Mr. X clonou a gangue! Skate Hunter se junta!',
-  },
-  'md-xmen2-clonewars': {
-    id: 'md-xmen2-clonewars',
-    rom_url: '/xmen2clonewars.smd',
-    core: 'genesis_plus_gx',
-    nome: 'X-Men 2: Clone Wars',
-    ano: '1995',
-    fabricante: 'Konami',
-    capa_url: '/xmen2clonewars.jpg', // Corrigido
-    descricao: 'Magneto e Apocalypse liberam clones mutantes!',
   },
 
   // NES
@@ -695,7 +455,7 @@ export const gamesDb = {
     nome: 'Duck Hunt',
     ano: '1984',
     fabricante: 'Nintendo',
-    capa_url: '/duck-hunt.jpg', // Corrigido
+    capa_url: '/duck-hunt.jpg',
     descricao: 'O cão zoeiro e sua Zapper na caça aos patos!',
   },
 
@@ -717,7 +477,7 @@ export const gamesDb = {
     nome: 'Pokémon Fire Red',
     ano: '2004',
     fabricante: 'Game Freak',
-    capa_url: '/pokemon-fire-red.jpg', // Corrigido
+    capa_url: '/pokemon-fire-red.jpg',
     descricao: 'Kanto em 3D com Pokémon até a Geração III!',
   },
 
