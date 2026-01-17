@@ -90,23 +90,20 @@ npm run build && npm run preview
 npm run dev -- --port 3000
 
 ```
-Instale as dependênciasBashnpm install
-Configure o Supabase (crie .env baseado em .env.example)textVITE_SUPABASE_URL=seu-url
-VITE_SUPABASE_ANON_KEY=sua-chave-anon
-Inicie o servidor de desenvolvimentoBashnpm run dev
 
 Acesse em http://localhost:5173
 
-⚠️ Aviso Legal Importante
+# ⚠️ Aviso Legal Importante
 Este projeto é estritamente educacional e de preservação cultural.
 As ROMs utilizadas são para fins de estudo, demonstração técnica e nostalgia pessoal.
 Não hospedamos, distribuímos nem incentivamos a pirataria.
 Todas as ROMs devem ser obtidas legalmente (dump de cartuchos próprios).
 O uso de material protegido por direitos autorais segue as leis de fair use/preservação em vigor.
-📄 Licença
+
+# 📄 Licença
 MIT License – uso livre para fins educacionais e portfólio.
 Sinta-se à vontade para fork, estudar e contribuir!
-🤝 Contribuição
+# 🤝 Contribuição
 Contribuições são super bem-vindas!
 Ideias boas: adicionar mais consoles, desafios semanais, suporte a save states na nuvem, tema dark retrô, etc.
 
